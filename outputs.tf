@@ -55,10 +55,6 @@ output "vnet_guid" {
   description = "The GUID of the VNet"
   value       = azurerm_virtual_network.this.guid
 }
-output "vnet_subnets" {
-  description = "The subnets associated with the VNet"
-  value       = azurerm_virtual_network.this.subnets
-}
 
 ### Key Vault Outputs
 output "kv_id" {
