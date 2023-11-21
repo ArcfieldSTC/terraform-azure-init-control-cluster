@@ -20,3 +20,10 @@ variable "rg_tags" {
   type        = map(string)
   default     = {}
 }
+
+### Security group variables
+variable "sg_tags" {
+  description = "map of tags to be applied to security group"
+  type        = map(string)
+  default     = {}
+}
