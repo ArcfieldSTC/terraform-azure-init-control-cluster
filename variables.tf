@@ -42,3 +42,15 @@ variable "vnet_cidr" {
     error_message = "InvalidCIDRNotation: The Address Space is not a correctly formated CIDR, or the address prefix is invalid for the CIDR's size"
   }
 }
+
+### Key Vault variables
+variable "kv_tags" {
+  description = "map of tags to be applied to key vault"
+  type        = map(string)
+  default     = {}
+}
+variable "kv_network_acls_ip_rules" {
+  description = "list of IP addresses to be allowed access to key vault"
+  type        = list(string)
+  default     = []
+}
