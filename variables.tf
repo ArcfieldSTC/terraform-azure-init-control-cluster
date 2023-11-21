@@ -2,6 +2,7 @@
 variable "name-prefix" {
   description = "value to be used as prefix for all resources"
   type        = string
+  default     = "init-control-cluster"
 }
 variable "primary_region" {
   description = "primary region to deploy resources"
