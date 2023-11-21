@@ -41,7 +41,7 @@ provider "azurerm" {
 
 run "test_module" {
     variables {
-        name_prefix = "test-init-control-cluster"
+        name_prefix = "test-init-cc"
         primary_region = "USGov Virginia"
         default_tags = {
             Environment = "Init"
@@ -52,23 +52,23 @@ run "test_module" {
     command = apply
     
     assert {
-        condition = azurerm_resource_group.this[0].name == "test-init-control-cluster-resource-group"
+        condition = azurerm_resource_group.this[0].name == "test-init-cc-rg"
         error_message = "Invalid name for resource group"
     }
     assert {
-        condition = azurerm_network_security_group.this[0].name == "test-init-control-cluster-nsg"
+        condition = azurerm_network_security_group.this[0].name == "test-init-cc-nsg"
         error_message = "Invalid name for NSG"
     }
     assert {
-      condition = azurerm_virtual_network.this[0].name == "test-init-control-cluster-vnet"
+      condition = azurerm_virtual_network.this[0].name == "test-init-cc-vnet"
       error_message = "Invalid name for VNet"
     }
     assert {
-      condition = azurerm_subnet.main[0].name == "testinit-control-cluster-subnet"
+      condition = azurerm_subnet.main[0].name == "testinit-cc-subnet"
       error_message = "Invalid name for Subnet"
     }
     assert {
-      condition = azurerm_key_vault.this[0].name == "test-init-control-cluster-kv"
+      condition = azurerm_key_vault.this[0].name == "test-init-cc-kv"
       error_message = "Invalid name for Key Vault"
     }
 }

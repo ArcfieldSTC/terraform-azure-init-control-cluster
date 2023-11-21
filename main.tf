@@ -2,7 +2,7 @@ data "azurerm_client_config" "current" {}
 
 # Creation of Init Control Cluster Resource Group
 resource "azurerm_resource_group" "this" {
-  name     = "${var.name_prefix}-resource-group"
+  name     = "${var.name_prefix}-rg"
   location = var.primary_region
   tags     = merge(var.default_tags, var.rg_tags)
 }
@@ -42,7 +42,7 @@ resource "azurerm_subnet_network_security_group_association" "this" {
 
 # Creation of Init Control Cluster Key Vault
 resource "azurerm_key_vault" "this" {
-  name                            = "${var.name_prefix}-keyvault"
+  name                            = "${var.name_prefix}-kv"
   location                        = var.primary_region
   resource_group_name             = azurerm_resource_group.this.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
