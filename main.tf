@@ -61,3 +61,5 @@ resource "azurerm_key_vault" "this" {
   }
   tags = merge(var.default_tags, var.kv_tags)
 }
+
+

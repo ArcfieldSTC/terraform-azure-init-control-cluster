@@ -29,7 +29,7 @@ jobs:
   Init:
     environment: stc-azure
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4
@@ -53,7 +53,7 @@ jobs:
     needs: Init
     environment: stc-azure
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
     needs: Init
     environment: stc-azure
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4
