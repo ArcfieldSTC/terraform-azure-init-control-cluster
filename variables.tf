@@ -12,3 +12,10 @@ variable "default_tags" {
   type        = map(string)
   default     = {}
 }
+
+### Resource group variables
+variable "rg_tags" {
+  description = "map of tags to be applied to resource group"
+  type        = map(string)
+  default     = {}
+}
