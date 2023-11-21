@@ -1,5 +1,5 @@
 #### Common variables
-variable "name-prefix" {
+variable "name_prefix" {
   description = "value to be used as prefix for all resources"
   type        = string
   default     = "init-control-cluster"
