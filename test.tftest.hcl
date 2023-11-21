@@ -64,7 +64,7 @@ run "test_module" {
       error_message = "Invalid name for VNet"
     }
     assert {
-      condition = azurerm_subnet.main.name == "testinit-cc-subnet"
+      condition = azurerm_subnet.this.name == "testinit-cc-subnet"
       error_message = "Invalid name for Subnet"
     }
     assert {
