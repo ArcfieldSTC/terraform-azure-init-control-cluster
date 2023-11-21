@@ -27,3 +27,18 @@ variable "sg_tags" {
   type        = map(string)
   default     = {}
 }
+
+### Virtual network variables
+variable "vnet_tags" {
+  description = "map of tags to be applied to virtual network"
+  type        = map(string)
+  default     = {}
+}
+variable "vnet_cidr" {
+  description = "CIDR block for virtual network"
+  type        = string
+  validation {
+    condition     = can(cidrhost(var.vnet_cidr, 0)) && try(cidrhost(var.vnet_cidr, 0), null) == split("/", var.vnet_cidr)[0]
+    error_message = "InvalidCIDRNotation: The Address Space is not a correctly formated CIDR, or the address prefix is invalid for the CIDR's size"
+  }
+}
