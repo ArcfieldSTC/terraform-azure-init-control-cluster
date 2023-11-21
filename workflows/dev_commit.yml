@@ -1,0 +1,100 @@
+name: Dev Commit
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  actions: write
+  id-token: write
+
+env:
+  TF_LOG: ERROR
+  TF_ROOT: ${{ github.repository.directory }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: true
+  #  ARM_USE_CLI: false
+  ARM_SKIP_PROVIDER_REGISTRATION: true
+  ARM_ENVIRONMENT: ${{ secrets.ARM_ENVIRONMENT }}
+
+concurrency: ${{ github.repository }}/${{ github.ref }}
+
+jobs:
+  Init:
+    environment: stc-azure
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v4
+
+      - name: Cache Terraform Init
+        uses: actions/cache@v3
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: ${{ runner.os }}-terraform-${{ hashFiles('.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
+      - name: Terraform Init
+        uses: hashicorp/setup-terraform@v3
+        id: init
+      - run: terraform init
+
+  Format:
+    needs: Init
+    environment: stc-azure
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v4
+
+      - name: Terraform Format
+        uses: hashicorp/setup-terraform@v3
+        id: fmt
+      - run: terraform fmt
+
+  Test:
+    needs: Init
+    environment: stc-azure
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v4
+
+      - name: Cache Terraform Init
+        uses: actions/cache@v3
+        with:
+          path: |
+            .terraform
+            .terraform.lock.hcl
+          key: ${{ runner.os }}-terraform-${{ hashFiles('.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
+      - name: Az CLI Login
+        uses: azure/login@v1.4.6
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          environment: ${{ secrets.AZ_CLI_ENVIRONMENT }}
+          allow-no-subscriptions: true
+
+      - name: Run az commands
+        run: az account show
+
+      - name: Terraform Test
+        uses: hashicorp/setup-terraform@v3
+        id: test
+      - run: terraform test

@@ -1,0 +1,37 @@
+name: Terraform Module Release
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TF_LOG: ERROR
+
+concurrency: ${{ github.repository }}/${{ github.ref }}
+
+jobs:
+  terraform-module-release:
+    if: ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    environment: stc-azure
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          branch: main
+          extends: |
+            @nuvibit/github-terraform-semantic-release-config
