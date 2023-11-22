@@ -54,3 +54,8 @@ variable "kv_network_acls_ip_rules" {
   type        = list(string)
   default     = []
 }
+variable "create_managed_hsm" {
+  description = "whether to create a managed HSM"
+  type        = bool
+  default     = false
+}
