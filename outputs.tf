@@ -97,7 +97,7 @@ output "kv_hsm_location" {
 }
 output "kv_hsm_uri" {
   description = "The URI of the Key Vault Managed HSM"
-  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].uri, null)
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].hsm_uri, null)
 }
 output "kv_hsm_tenant_id" {
   description = "The tenant ID of the Key Vault Managed HSM"
