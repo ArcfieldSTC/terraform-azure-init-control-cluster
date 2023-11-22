@@ -24,16 +24,29 @@ resource "azurerm_virtual_network" "this" {
   tags                = merge(var.default_tags, var.vnet_tags)
 }
 
-resource "azurerm_subnet" "this" {
+resource "azurerm_subnet" "main" {
   name                 = "${var.name_prefix}-subnet"
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = [var.vnet_cidr]
+  address_prefixes     = [cidrsubnet(var.vnet_cidr, 1, 0)]
   service_endpoints = [
     "Microsoft.ContainerRegistry",
     "Microsoft.KeyVault",
     "Microsoft.Storage"
   ]
+}
+resource "azurerm_subnet" "api_dedicated" {
+  name                 = "${var.name_prefix}-api-subnet"
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = [cidrsubnet(var.vnet_cidr, 1, 1)]
+  delegation {
+    name = "api-delegation"
+    service_delegation {
+      name    = "Microsoft.ContainerInstance/containerGroups"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }
 resource "azurerm_subnet_network_security_group_association" "this" {
   subnet_id                 = azurerm_subnet.this.id
@@ -105,6 +118,7 @@ resource "azurerm_kubernetes_cluster" "this" {
   resource_group_name = azurerm_resource_group.this.name
   dns_prefix          = "${var.name_prefix}-aks"
   node_resource_group = "${var.name_prefix}-aks-nodes"
+  sku_tier            = var.aks_sku_tier
   default_node_pool {
     name                   = var.aks_default_node_pool_name
     node_count             = var.aks_node_count
@@ -118,6 +132,10 @@ resource "azurerm_kubernetes_cluster" "this" {
     os_sku                 = var.aks_os_sku
     vnet_subnet_id         = azurerm_subnet.this.id
     fips_enabled           = var.aks_fips_enabled
+  }
+  api_server_access_profile {
+    authorized_ip_ranges = var.aks_api_server_authorized_ip_ranges
+    subnet_id            = azurerm_subnet.this.id
   }
   lifecycle {
     ignore_changes = [node_count]
