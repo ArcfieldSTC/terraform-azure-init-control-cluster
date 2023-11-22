@@ -81,3 +81,47 @@ output "kv_tenant_id" {
   description = "The tenant ID of the Key Vault"
   value       = azurerm_key_vault.this.tenant_id
 }
+
+### Key Vault Managed HSM Outputs
+output "kv_hsm_id" {
+  description = "The ID of the Key Vault Managed HSM"
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].id, null)
+}
+output "kv_hsm_name" {
+  description = "The name of the Key Vault Managed HSM"
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].name, null)
+}
+output "kv_hsm_location" {
+  description = "The region the Key Vault Managed HSM is deployed in"
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].location, null)
+}
+output "kv_hsm_uri" {
+  description = "The URI of the Key Vault Managed HSM"
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].uri, null)
+}
+output "kv_hsm_tenant_id" {
+  description = "The tenant ID of the Key Vault Managed HSM"
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].tenant_id)
+}
+
+### CMK Outputs
+output "cmk_id" {
+  description = "The ID of the Customer Managed Key"
+  value       = azurerm_key_vault_key.encrypt-cmk.id
+}
+output "cmk_name" {
+  description = "The name of the Customer Managed Key"
+  value       = azurerm_key_vault_key.encrypt-cmk.name
+}
+output "cmk_version" {
+  description = "The version of the Customer Managed Key"
+  value       = azurerm_key_vault_key.encrypt-cmk.version
+}
+output "cmk_versionless_id" {
+  description = "The versionless ID of the Customer Managed Key"
+  value       = azurerm_key_vault_key.encrypt-cmk.versionless_id
+}
+output "cmk_resource_versionless_id" {
+  description = "The versionless ID of the Customer Managed Key"
+  value       = azurerm_key_vault_key.encrypt-cmk.resource_versionless_id
+}
