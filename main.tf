@@ -46,16 +46,16 @@ resource "azurerm_key_vault" "this" {
   location                        = var.primary_region
   resource_group_name             = azurerm_resource_group.this.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = "premium"
-  purge_protection_enabled        = true
-  soft_delete_retention_days      = 7
-  enabled_for_disk_encryption     = true
-  enabled_for_deployment          = true
-  enabled_for_template_deployment = true
-  enable_rbac_authorization       = true
+  sku_name                        = var.kv_sku
+  purge_protection_enabled        = var.kv_purge_protection_enabled
+  soft_delete_retention_days      = var.kv_softdelete_retention_days
+  enabled_for_disk_encryption     = var.kv_disk_encryption_enabled
+  enabled_for_deployment          = var.kv_deploy_access_policy
+  enabled_for_template_deployment = var.kv_template_deployment_enabled
+  enable_rbac_authorization       = var.kv_rbac_enabled
   network_acls {
-    default_action             = "Deny"
-    bypass                     = "AzureServices"
+    default_action             = var.kv_network_acls_default_action
+    bypass                     = var.kv_network_acls_bypass
     ip_rules                   = var.kv_network_acls_ip_rules
     virtual_network_subnet_ids = azurerm_virtual_network.this.subnet.*.id
   }
@@ -75,10 +75,10 @@ resource "azurerm_key_vault_managed_hardware_security_module" "this" {
   name                       = "${var.name_prefix}-kv-hsm"
   location                   = var.primary_region
   resource_group_name        = azurerm_resource_group.this.name
-  sku_name                   = "Standard_B1"
+  sku_name                   = var.kv_hsm_sku_name
   tags                       = merge(var.default_tags, var.kv_tags)
-  purge_protection_enabled   = false
-  soft_delete_retention_days = 7
+  purge_protection_enabled   = var.kv_purge_protection_enabled
+  soft_delete_retention_days = var.kv_softdelete_retention_days
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   admin_object_ids           = [data.azurerm_client_config.current.object_id]
 }
@@ -86,16 +86,40 @@ resource "azurerm_key_vault_managed_hardware_security_module" "this" {
 # Creation of HSM CMK to meet the encryption requirements to handle IL5 data in Azure Gov
 resource "azurerm_key_vault_key" "encrypt-cmk" {
   name         = "${var.name_prefix}-en-cmk"
-  key_type     = "RSA-HSM"
-  key_size     = 4096
-  key_opts     = ["encrypt", "decrypt", "wrapKey", "unwrapKey"]
+  key_type     = var.cmk_key_type
+  key_size     = var.cmk_key_size
+  key_opts     = var.cmk_key_opts
   key_vault_id = azurerm_key_vault.this.id
-  tags         = merge(var.default_tags, var.kv_tags)
+  tags         = merge(var.default_tags, var.cmk_tags)
   rotation_policy {
-    expire_after = "P7D"
+    expire_after = var.cmk_expire_after
     automatic {
-      time_before_expiry = "P3D"
+      time_before_expiry = var.cmk_auto_rotation
     }
   }
 }
 
+resource "azurerm_kubernetes_cluster" "this" {
+  name                = "${var.name_prefix}-aks"
+  location            = var.primary_region
+  resource_group_name = azurerm_resource_group.this.name
+  dns_prefix          = "${var.name_prefix}-aks"
+  node_resource_group = "${var.name_prefix}-aks-nodes"
+  default_node_pool {
+    name                   = var.aks_default_node_pool_name
+    node_count             = var.aks_node_count
+    vm_size                = var.aks_node_size
+    type                   = var.aks_default_node_pool_type
+    enable_auto_scaling    = var.aks_enable_auto_scaling
+    enable_host_encryption = var.aks_enable_host_encryption
+    min_count              = var.aks_auto_scaling_min_count
+    max_count              = var.aks_auto_scaling_max_count
+    os_disk_size_gb        = var.aks_node_os_disk_size
+    os_sku                 = var.aks_os_sku
+    vnet_subnet_id         = azurerm_subnet.this.id
+    fips_enabled           = var.aks_fips_enabled
+  }
+  lifecycle {
+    ignore_changes = [node_count]
+  }
+}
