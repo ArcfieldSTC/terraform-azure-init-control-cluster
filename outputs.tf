@@ -101,7 +101,7 @@ output "kv_hsm_uri" {
 }
 output "kv_hsm_tenant_id" {
   description = "The tenant ID of the Key Vault Managed HSM"
-  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].tenant_id)
+  value       = try(azurerm_key_vault_managed_hardware_security_module.this[0].tenant_id, null)
 }
 
 ### CMK Outputs

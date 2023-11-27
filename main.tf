@@ -105,7 +105,8 @@ resource "azurerm_key_vault_key" "encrypt-cmk" {
   key_vault_id = azurerm_key_vault.this.id
   tags         = merge(var.default_tags, var.cmk_tags)
   rotation_policy {
-    expire_after = var.cmk_expire_after
+    expire_after         = var.cmk_expire_after
+    notify_before_expiry = var.cmk_notify_before_expiry
     automatic {
       time_before_expiry = var.cmk_auto_rotation
     }
@@ -195,6 +196,7 @@ resource "azurerm_kubernetes_flux_configuration" "this" {
     reference_type   = var.flux_git_reference_type
     reference_value  = var.flux_git_branch
     https_key_base64 = var.flux_git_https_key_base64
+    https_user       = var.flux_git_https_user
   }
   depends_on = [azurerm_kubernetes_cluster_extension.flux]
 }

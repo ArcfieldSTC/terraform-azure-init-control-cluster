@@ -140,6 +140,11 @@ variable "cmk_expire_after" {
   type        = string
   default     = "P60D"
 }
+variable "cmk_notify_before_expiry" {
+  description = "number of days before expiration to notify about CMK"
+  type        = string
+  default     = "P15D"
+}
 variable "cmk_auto_rotation" {
   description = "number of days before expiration to rotate the CMK"
   type        = string
@@ -323,4 +328,10 @@ variable "flux_git_https_key_base64" {
   description = "value of git https key to use for flux"
   type        = string
   default     = ""
+}
+variable "flux_git_https_user" {
+  description = "value of git https user to use for flux"
+  type        = string
+  default     = ""
+
 }

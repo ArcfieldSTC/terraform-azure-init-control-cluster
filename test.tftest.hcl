@@ -48,6 +48,7 @@ run "test_module" {
             CostType = "OH"
         }
         vnet_cidr = "192.168.0.0/24"
+        flux_git_url = "https://github.com/ArcfieldSTC/gitops-system"
     }
     command = apply
     
