@@ -97,6 +97,6 @@ jobs:
       - name: Terraform Test
         uses: hashicorp/setup-terraform@v3
         id: test
-        with:
+        env:
           TF_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
       - run: terraform test
