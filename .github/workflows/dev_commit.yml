@@ -68,7 +68,7 @@ jobs:
     environment: stc-azure
     runs-on: ubuntu-latest
     env:
-      TF_VAR_flux_git_https_key_base64: "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"
+      TF_VAR_flux_git_https_key_base64: "secrets.FLUX_GIT_HTTPS_KEY_BASE64"
       TF_VAR_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
