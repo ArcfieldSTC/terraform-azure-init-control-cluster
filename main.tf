@@ -24,7 +24,7 @@ resource "azurerm_virtual_network" "this" {
   tags                = merge(var.default_tags, var.vnet_tags)
 }
 
-resource "azurerm_subnet" "main" {
+resource "azurerm_subnet" "this" {
   name                 = "${var.name_prefix}-subnet"
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
@@ -111,14 +111,24 @@ resource "azurerm_key_vault_key" "encrypt-cmk" {
     }
   }
 }
-
-resource "azurerm_kubernetes_cluster" "this" {
-  name                = "${var.name_prefix}-aks"
+# User assigned identity for AKS
+resource "azurerm_user_assigned_identity" "this" {
+  name                = "${var.name_prefix}-identity"
   location            = var.primary_region
   resource_group_name = azurerm_resource_group.this.name
-  dns_prefix          = "${var.name_prefix}-aks"
-  node_resource_group = "${var.name_prefix}-aks-nodes"
-  sku_tier            = var.aks_sku_tier
+  tags                = merge(var.default_tags, var.uai_tags)
+}
+
+# Creation of AKS Init Control Cluster
+resource "azurerm_kubernetes_cluster" "this" {
+  name                              = "${var.name_prefix}-aks"
+  location                          = var.primary_region
+  resource_group_name               = azurerm_resource_group.this.name
+  dns_prefix                        = "${var.name_prefix}-aks"
+  node_resource_group               = "${var.name_prefix}-aks-nodes"
+  sku_tier                          = var.aks_sku_tier
+  automatic_channel_upgrade         = var.aks_auto_channel_upgrade
+  role_based_access_control_enabled = var.aks_rbac_enabled
   default_node_pool {
     name                   = var.aks_default_node_pool_name
     node_count             = var.aks_node_count
@@ -134,10 +144,39 @@ resource "azurerm_kubernetes_cluster" "this" {
     fips_enabled           = var.aks_fips_enabled
   }
   api_server_access_profile {
-    authorized_ip_ranges = var.aks_api_server_authorized_ip_ranges
-    subnet_id            = azurerm_subnet.this.id
+    authorized_ip_ranges     = merge(var.aks_api_server_authorized_ip_ranges, azurerm_subnet.this.address_prefixes)
+    subnet_id                = azurerm_subnet.api_dedicated.id
+    vnet_integration_enabled = var.aks_vnet_integration_enabled
+  }
+  azure_active_directory_role_based_access_control {
+    managed            = var.aks_aad_rbac_managed
+    tenant_id          = data.azurerm_client_config.current.tenant_id
+    azure_rbac_enabled = var.aks_aad_rbac_enabled
+  }
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.this.id]
+  }
+  network_profile {
+    network_plugin    = var.aks_network_plugin
+    network_policy    = var.aks_network_policy
+    load_balancer_sku = var.aks_load_balancer_sku
+    outbound_type     = var.aks_outbound_type
+  }
+  storage_profile {
+    blob_driver_enabled         = var.aks_blob_driver_enabled
+    disk_driver_enabled         = var.aks_disk_driver_enabled
+    file_driver_enabled         = var.aks_file_driver_enabled
+    snapshot_controller_enabled = var.aks_snapshot_controller_enabled
   }
   lifecycle {
     ignore_changes = [node_count]
   }
+}
+
+# Addition of AKS Flux Extension
+resource "azurerm_kubernetes_cluster_extension" "flux" {
+  name           = "${var.name_prefix}-aks-flux"
+  cluster_id     = azurerm_kubernetes_cluster.this.id
+  extension_type = "microsoft.flux"
 }

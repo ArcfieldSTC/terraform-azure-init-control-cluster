@@ -37,6 +37,7 @@ variable "vnet_tags" {
 variable "vnet_cidr" {
   description = "CIDR block for virtual network"
   type        = string
+  default     = "192.168.0.0/24"
   validation {
     condition     = can(cidrhost(var.vnet_cidr, 0)) && try(cidrhost(var.vnet_cidr, 0), null) == split("/", var.vnet_cidr)[0]
     error_message = "InvalidCIDRNotation: The Address Space is not a correctly formated CIDR, or the address prefix is invalid for the CIDR's size"
@@ -145,6 +146,13 @@ variable "cmk_auto_rotation" {
   default     = "P10D"
 }
 
+### User Assigned Identity variables
+variable "uai_tags" {
+  description = "map of tags to be applied to user assigned identity"
+  type        = map(string)
+  default     = {}
+}
+
 ### AKS variables
 variable "aks_tags" {
   description = "map of tags to be applied to AKS"
@@ -205,5 +213,80 @@ variable "aks_default_node_pool_type" {
   description = "type of default node pool for AKS"
   type        = string
   default     = "VirtualMachineScaleSets"
+}
+variable "aks_sku_tier" {
+  description = "SKU tier to use for AKS"
+  type        = string
+  default     = "Standard"
+}
+variable "aks_api_server_authorized_ip_ranges" {
+  description = "list of IP ranges to allow access to AKS API server"
+  type        = list(string)
+  default     = []
+}
+variable "aks_vnet_integration_enabled" {
+  description = "whether to enable VNet integration for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_auto_channel_upgrade" {
+  description = "auto channel upgrade configuration for AKS"
+  type        = string
+  default     = "patch"
+}
+variable "aks_rbac_enabled" {
+  description = "whether to enable RBAC for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_aad_rbac_managed" {
+  description = "whether RBAC should be managed by AAD RBAC for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_aad_rbac_enabled" {
+  description = "whether to enable AAD RBAC for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_network_plugin" {
+  description = "network plugin to use for AKS"
+  type        = string
+  default     = "azure"
+}
+variable "aks_network_policy" {
+  description = "network policy to use for AKS"
+  type        = string
+  default     = "azure"
+}
+variable "aks_outbound_type" {
+  description = "network outbound type to use for AKS"
+  type        = string
+  default     = "loadBalancer"
+}
+variable "aks_load_balancer_sku" {
+  description = "load balancer SKU to use for AKS"
+  type        = string
+  default     = "standard"
+}
+variable "aks_blob_driver_enabled" {
+  description = "whether to enable blob driver for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_disk_driver_enabled" {
+  description = "whether to enable disk driver for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_file_driver_enabled" {
+  description = "whether to enable file driver for AKS"
+  type        = bool
+  default     = true
+}
+variable "aks_snapshot_controller_enabled" {
+  description = "whether to enable snapshot driver for AKS"
+  type        = bool
+  default     = true
 
 }
