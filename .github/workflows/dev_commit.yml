@@ -67,6 +67,9 @@ jobs:
     needs: Init
     environment: stc-azure
     runs-on: ubuntu-latest
+    env:
+      TF_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
+      TF_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
@@ -97,7 +100,4 @@ jobs:
       - name: Terraform Test
         uses: hashicorp/setup-terraform@v3
         id: test
-        env:
-          TF_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
-          TF_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
       - run: terraform test
