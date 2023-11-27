@@ -180,3 +180,21 @@ resource "azurerm_kubernetes_cluster_extension" "flux" {
   cluster_id     = azurerm_kubernetes_cluster.this.id
   extension_type = "microsoft.flux"
 }
+
+# configuration of flux. Git repo must exist before using this module or this will fail.
+resource "azurerm_kubernetes_flux_configuration" "this" {
+  name       = "${var.name_prefix}-aks-flux-config"
+  cluster_id = azurerm_kubernetes_cluster.this.id
+  namespace  = var.aks_flux_namespace
+  scope      = var.aks_flux_scope
+  kustomizations {
+    name = var.aks_kustomization_name
+  }
+  git_repository {
+    url              = var.flux_git_url
+    reference_type   = var.flux_git_reference_type
+    reference_value  = var.flux_git_branch
+    https_key_base64 = var.flux_git_https_key_base64
+  }
+  depends_on = [azurerm_kubernetes_cluster_extension.flux]
+}
