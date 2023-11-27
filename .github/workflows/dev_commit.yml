@@ -68,8 +68,8 @@ jobs:
     environment: stc-azure
     runs-on: ubuntu-latest
     env:
-      TF_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
-      TF_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
+      TF_VAR_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
+      TF_VAR_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
