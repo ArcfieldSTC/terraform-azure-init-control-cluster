@@ -232,7 +232,7 @@ variable "aks_api_server_authorized_ip_ranges" {
 variable "aks_vnet_integration_enabled" {
   description = "whether to enable VNet integration for AKS"
   type        = bool
-  default     = true
+  default     = false
 }
 variable "aks_auto_channel_upgrade" {
   description = "auto channel upgrade configuration for AKS"

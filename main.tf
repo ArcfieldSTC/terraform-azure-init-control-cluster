@@ -111,6 +111,7 @@ resource "azurerm_key_vault_key" "encrypt-cmk" {
       time_before_expiry = var.cmk_auto_rotation
     }
   }
+  depends_on = [azurerm_role_assignment.kv_rbac_co]
 }
 # User assigned identity for AKS
 resource "azurerm_user_assigned_identity" "this" {
