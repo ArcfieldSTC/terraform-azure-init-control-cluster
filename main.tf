@@ -170,7 +170,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     snapshot_controller_enabled = var.aks_snapshot_controller_enabled
   }
   lifecycle {
-    ignore_changes = [node_count]
+    ignore_changes = [default_node_pool.node_count]
   }
 }
 
