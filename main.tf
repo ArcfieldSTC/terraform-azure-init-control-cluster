@@ -178,10 +178,6 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 }
 
-resource "flux_bootstrap_git" "this" {
-  path = var.flux_bootstrap_path
-}
-
 # Addition of AKS Flux Extension
 /* resource "azurerm_kubernetes_cluster_extension" "flux" {
   name              = "${var.name_prefix}-aks-flux"
