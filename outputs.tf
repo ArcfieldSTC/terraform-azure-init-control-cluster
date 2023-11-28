@@ -125,3 +125,9 @@ output "cmk_resource_versionless_id" {
   description = "The versionless ID of the Customer Managed Key"
   value       = azurerm_key_vault_key.encrypt-cmk.resource_versionless_id
 }
+
+### AKS Outputs
+output "aks_id" {
+  description = "The ID of the AKS Cluster"
+  value       = azurerm_kubernetes_cluster.this.id
+}
