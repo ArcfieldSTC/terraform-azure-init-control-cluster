@@ -57,23 +57,23 @@ run "test_module" {
     command = apply
     
     assert {
-        condition = azurerm_resource_group.this.name == "test-init-cc-rg"
+        condition = azurerm_resource_group.this.name == "test-cc-rg"
         error_message = "Invalid name for resource group"
     }
     assert {
-        condition = azurerm_network_security_group.this.name == "test-init-cc-nsg"
+        condition = azurerm_network_security_group.this.name == "test-cc-nsg"
         error_message = "Invalid name for NSG"
     }
     assert {
-      condition = azurerm_virtual_network.this.name == "test-init-cc-vnet"
+      condition = azurerm_virtual_network.this.name == "test-cc-vnet"
       error_message = "Invalid name for VNet"
     }
     assert {
-      condition = azurerm_subnet.this.name == "test-init-cc-subnet"
+      condition = azurerm_subnet.this.name == "test-cc-subnet"
       error_message = "Invalid name for Subnet"
     }
     assert {
-      condition = azurerm_key_vault.this.name == "test-init-cc-kv"
+      condition = azurerm_key_vault.this.name == "test-cc-kv"
       error_message = "Invalid name for Key Vault"
     }
 }
