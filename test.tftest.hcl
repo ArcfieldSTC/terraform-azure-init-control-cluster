@@ -41,7 +41,7 @@ provider "azurerm" {
 
 run "test_module" {
     variables {
-        name_prefix = "test-init-cc"
+        name_prefix = "test-cc"
         primary_region = "USGov Virginia"
         default_tags = {
             Environment = "Init"
@@ -52,6 +52,7 @@ run "test_module" {
         kv_network_acls_default_action = "Allow"
         kv_network_acls_ip_rules = ["20.253.78.0/24", "20.80.156.0/24"]
         aks_enable_host_encryption = false
+        kv_purge_protection_enabled = false
     }
     command = apply
     
