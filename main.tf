@@ -178,9 +178,10 @@ resource "azurerm_kubernetes_cluster" "this" {
 
 # Addition of AKS Flux Extension
 resource "azurerm_kubernetes_cluster_extension" "flux" {
-  name           = "${var.name_prefix}-aks-flux"
-  cluster_id     = azurerm_kubernetes_cluster.this.id
-  extension_type = "microsoft.flux"
+  name              = "${var.name_prefix}-aks-flux"
+  cluster_id        = azurerm_kubernetes_cluster.this.id
+  extension_type    = "microsoft.flux"
+  release_namespace = var.aks_flux_namespace
 }
 
 # configuration of flux. Git repo must exist before using this module or this will fail.
