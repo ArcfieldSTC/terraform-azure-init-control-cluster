@@ -333,5 +333,10 @@ variable "flux_git_https_user" {
   description = "value of git https user to use for flux"
   type        = string
   default     = ""
+}
 
+variable "flux_bootstrap_path" {
+  description = "path to flux bootstrap git repo"
+  type        = string
+  default     = ""
 }

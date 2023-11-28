@@ -178,14 +178,18 @@ resource "azurerm_kubernetes_cluster" "this" {
   }
 }
 
+resource "flux_bootstrap_git" "this" {
+  path = var.flux_bootstrap_path
+}
+
 # Addition of AKS Flux Extension
-resource "azurerm_kubernetes_cluster_extension" "flux" {
+/* resource "azurerm_kubernetes_cluster_extension" "flux" {
   name              = "${var.name_prefix}-aks-flux"
   cluster_id        = azurerm_kubernetes_cluster.this.id
   extension_type    = "microsoft.flux"
   release_namespace = var.aks_flux_namespace
   depends_on        = [azurerm_kubernetes_cluster.this]
-}
+} */
 
 # configuration of flux. Git repo must exist before using this module or this will fail.
 resource "azurerm_kubernetes_flux_configuration" "this" {
@@ -203,5 +207,5 @@ resource "azurerm_kubernetes_flux_configuration" "this" {
     https_key_base64 = var.flux_git_https_key_base64
     https_user       = var.flux_git_https_user
   }
-  depends_on = [azurerm_kubernetes_cluster_extension.flux]
+  depends_on = [azurerm_kubernetes_cluster.this]
 }
