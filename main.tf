@@ -146,8 +146,8 @@ resource "azurerm_kubernetes_cluster" "this" {
     fips_enabled           = var.aks_fips_enabled
   }
   api_server_access_profile {
-    authorized_ip_ranges     = coalesce(var.aks_api_server_authorized_ip_ranges, azurerm_subnet.this.address_prefixes)
-    subnet_id                = azurerm_subnet.api_dedicated.id
+    authorized_ip_ranges = coalesce(var.aks_api_server_authorized_ip_ranges, azurerm_subnet.this.address_prefixes)
+    #subnet_id                = azurerm_subnet.api_dedicated.id
     vnet_integration_enabled = var.aks_vnet_integration_enabled
   }
   azure_active_directory_role_based_access_control {

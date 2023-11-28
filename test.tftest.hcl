@@ -49,6 +49,7 @@ run "test_module" {
         }
         vnet_cidr = "192.168.0.0/24"
         flux_git_url = "https://github.com/ArcfieldSTC/gitops-system"
+        kv_network_acls_default_action = "Allow"
     }
     command = apply
     
