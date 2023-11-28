@@ -50,7 +50,7 @@ run "test_module" {
         vnet_cidr = "192.168.0.0/24"
         flux_git_url = "https://github.com/ArcfieldSTC/gitops-system"
         kv_network_acls_default_action = "Allow"
-        kv_network_acls_ip_rules = ["20.253.78.184/29", "20.80.156.200/29"]
+        kv_network_acls_ip_rules = ["20.253.78.0/24", "20.80.156.0/24"]
         aks_enable_host_encryption = false
     }
     command = apply
