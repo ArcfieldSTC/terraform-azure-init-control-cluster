@@ -121,6 +121,8 @@ resource "azurerm_user_assigned_identity" "this" {
   tags                = merge(var.default_tags, var.uai_tags)
 }
 
+
+
 # Creation of AKS Init Control Cluster
 resource "azurerm_kubernetes_cluster" "this" {
   name                              = "${var.name_prefix}-aks"
@@ -182,6 +184,7 @@ resource "azurerm_kubernetes_cluster_extension" "flux" {
   cluster_id        = azurerm_kubernetes_cluster.this.id
   extension_type    = "microsoft.flux"
   release_namespace = var.aks_flux_namespace
+  depends_on        = [azurerm_kubernetes_cluster.this]
 }
 
 # configuration of flux. Git repo must exist before using this module or this will fail.
