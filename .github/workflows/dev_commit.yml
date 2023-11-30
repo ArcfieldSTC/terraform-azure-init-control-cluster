@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 env:
-  TF_LOG: ERROR
+  TF_LOG: WARN
   TF_ROOT: ${{ github.repository.directory }}
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -29,7 +29,7 @@ jobs:
   Init:
     environment: stc-azure
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4
@@ -47,13 +47,13 @@ jobs:
       - name: Terraform Init
         uses: hashicorp/setup-terraform@v3
         id: init
-      - run: terraform init
+      - run: terraform init -upgrade
 
   Format:
     needs: Init
     environment: stc-azure
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4
@@ -66,8 +66,12 @@ jobs:
   Test:
     needs: Init
     environment: stc-azure
-    runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }} && ${{ github.repository }} != 'ArcfieldSTC/terraform-module-template'
+    runs-on: 
+      labels: stc-base-runner
+    env:
+      TF_VAR_flux_git_https_key_base64: ${{ secrets.FLUX_GIT_HTTPS_KEY_BASE64 }}
+      TF_VAR_flux_git_https_user: ${{ secrets.FLUX_GIT_HTTPS_USER }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v4

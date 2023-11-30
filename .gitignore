@@ -35,3 +35,5 @@ terraform.rc
 
 # Ignore Visual Studio Code Workspace
 .vscode/*
+
+flux_pat.txt
