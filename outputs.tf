@@ -135,3 +135,23 @@ output "aks_name" {
   description = "The name of the AKS Cluster"
   value       = azurerm_kubernetes_cluster.this.name
 }
+output "aks_rg_name" {
+  description = "The Resource Group Name associated with the AKS Cluster"
+  value       = azurerm_kubernetes_cluster.this.resource_group_name
+}
+output "aks_location" {
+  description = "The region the AKS Cluster is deployed in"
+  value       = azurerm_kubernetes_cluster.this.location
+}
+output "aks_fqdn" {
+  description = "The FQDN of the AKS Cluster"
+  value       = azurerm_kubernetes_cluster.this.fqdn
+}
+output "aks_node_resource_group" {
+  description = "The name of the Resource Group associated with the AKS Cluster nodes"
+  value       = azurerm_kubernetes_cluster.this.node_resource_group
+}
+output "aks_node_resource_group_id" {
+  description = "The ID of the Resource Group associated with the AKS Cluster nodes"
+  value       = azurerm_kubernetes_cluster.this.node_resource_group_id
+}

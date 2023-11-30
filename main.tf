@@ -184,31 +184,3 @@ resource "azurerm_role_assignment" "aks_rbac_admin" {
   principal_id         = data.azurerm_client_config.current.object_id
   depends_on           = [azurerm_kubernetes_cluster.this]
 }
-
-# Addition of AKS Flux Extension
-resource "azurerm_kubernetes_cluster_extension" "flux" {
-  name              = "${var.name_prefix}-aks-flux"
-  cluster_id        = azurerm_kubernetes_cluster.this.id
-  extension_type    = "microsoft.flux"
-  release_namespace = var.aks_flux_namespace
-  depends_on        = [azurerm_role_assignment.aks_rbac_admin]
-}
-
-# configuration of flux. Git repo must exist before using this module or this will fail.
-resource "azurerm_kubernetes_flux_configuration" "this" {
-  name       = "${var.name_prefix}-aks-flux-config"
-  cluster_id = azurerm_kubernetes_cluster.this.id
-  namespace  = var.aks_flux_namespace
-  scope      = var.aks_flux_scope
-  kustomizations {
-    name = var.aks_kustomization_name
-  }
-  git_repository {
-    url              = var.flux_git_url
-    reference_type   = var.flux_git_reference_type
-    reference_value  = var.flux_git_branch
-    https_key_base64 = var.flux_git_https_key_base64
-    https_user       = var.flux_git_https_user
-  }
-  depends_on = [azurerm_kubernetes_cluster_extension.flux]
-}

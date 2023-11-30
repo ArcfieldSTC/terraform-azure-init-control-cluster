@@ -294,49 +294,6 @@ variable "aks_snapshot_controller_enabled" {
   type        = bool
   default     = true
 }
-variable "aks_flux_namespace" {
-  description = "namespace to deploy flux to for AKS"
-  type        = string
-  default     = "flux-system"
-}
-variable "aks_flux_scope" {
-  description = "scope to deploy flux to for AKS"
-  type        = string
-  default     = "cluster"
-}
-variable "aks_kustomization_name" {
-  description = "name of kustomization to deploy for AKS"
-  type        = string
-  default     = "flux-system"
-}
-variable "flux_git_url" {
-  description = "URL of git repo to use for flux"
-  type        = string
-  default     = ""
-}
-variable "flux_git_branch" {
-  description = "branch of git repo to use for flux"
-  type        = string
-  default     = "main"
-}
-variable "flux_git_reference_type" {
-  description = "type of git reference to use for flux"
-  type        = string
-  default     = "branch"
-}
-variable "flux_git_https_key_base64" {
-  description = "value of git https key to use for flux"
-  type        = string
-  default     = ""
-}
-variable "flux_git_https_user" {
-  description = "value of git https user to use for flux"
-  type        = string
-  default     = ""
-}
 
-variable "flux_bootstrap_path" {
-  description = "path to flux bootstrap git repo"
-  type        = string
-  default     = ""
-}
+
+
